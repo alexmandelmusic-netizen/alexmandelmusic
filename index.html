@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alex Mandel Composer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Alex Mandel, composer and songwriter for film, television and animation.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: centered headline, one wide card for Animation, two cards side by side below; each card opens a video. */
+:root {
+  --bg: #171b1f;
+  --card: #262c32;
+  --line: #333b43;
+  --fg: #eef0f1;
+  --muted: #aab1b8;
+  --accent: #d9b66f;
+  --accent-ink: #171b1f;
+  --band-bg: #e6eaee;
+  --band-fg: #16191c;
+  --band-muted: #555c63;
+  --band-accent: #7a560e;
+  --chip-bg: rgba(52, 56, 60, 0.82);
+  --chip-fg: #f2f3f4;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #f3f4f4;
+    --card: #e4e8ea;
+    --line: #cbd1d5;
+    --fg: #14181b;
+    --muted: #4f5760;
+    --accent: #7d5a10;
+    --accent-ink: #f3f4f4;
+    --chip-bg: rgba(40, 44, 48, 0.82);
+    --chip-fg: #f2f3f4;
+    --band-bg: #171b1f;
+    --band-fg: #eef0f1;
+    --band-muted: #aab1b8;
+    --band-accent: #d9b66f;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #f3f4f4;
+  --card: #e4e8ea;
+  --line: #cbd1d5;
+  --fg: #14181b;
+  --muted: #4f5760;
+  --accent: #7d5a10;
+  --accent-ink: #f3f4f4;
+  --chip-bg: rgba(40, 44, 48, 0.82);
+  --chip-fg: #f2f3f4;
+  --band-bg: #171b1f;
+  --band-fg: #eef0f1;
+  --band-muted: #aab1b8;
+  --band-accent: #d9b66f;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 64rem; margin: 0 auto; padding-block: 0 2.5rem; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem 1.5rem; padding-block: 1.25rem; }
+.brand { font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; font-size: 0.95rem; }
+.nav { display: flex; gap: 1.25rem; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.nav a { text-decoration: none; color: var(--fg); }
+.nav a:hover { color: var(--accent); }
+
+.hero { text-align: center; padding-block: 1.25rem 1.75rem; }
+.kicker { margin: 0 0 0.6rem; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+h1 { margin: 0; font-size: clamp(1.7rem, 4.5vw, 2.4rem); font-weight: 600; line-height: 1.15; text-wrap: balance; }
+.sub { margin: 0.7rem auto 0; max-width: 34rem; color: var(--muted); font-size: 0.95rem; text-wrap: balance; }
+
+.work { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; scroll-margin-top: 1rem; }
+.card { display: block; background: var(--card); border-radius: 10px; overflow: hidden; text-decoration: none; color: var(--fg); }
+.card.wide { grid-column: 1 / -1; }
+.shot { position: relative; margin: 0; background: var(--line); }
+.shot img { display: block; width: 100%; height: auto; max-width: 100%; object-fit: cover; aspect-ratio: 4 / 3; }
+.wide .shot img { aspect-ratio: 16 / 9; object-position: 50% 50%; }
+.leo img { object-position: 50% 62%; }
+.chip { position: absolute; left: 0.5rem; bottom: 0.5rem; background: var(--chip-bg); color: var(--chip-fg); font-size: 0.78rem; padding: 0.2rem 0.65rem; border-radius: 999px; }
+.cap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.15rem 1rem; align-items: center; padding: 0.9rem 1rem 1rem; }
+.cap h2 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+.wide .cap h2 { font-size: 1.2rem; }
+.cap p { margin: 0; grid-column: 1; color: var(--muted); font-size: 0.82rem; }
+.play { grid-column: 2; grid-row: 1; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--accent); display: grid; place-items: center; }
+.play svg { width: 0.55rem; height: 0.55rem; fill: var(--accent-ink); margin-left: 0.08rem; }
+.card:hover h2 { color: var(--accent); }
+@media (max-width: 560px) {
+  .work { grid-template-columns: minmax(0, 1fr); }
+}
+
+.bio { padding-block: 2.75rem 0; scroll-margin-top: 1rem; }
+.bio h2 { margin: 0 0 1.25rem; font-size: clamp(1.4rem, 3.4vw, 1.8rem); font-weight: 600; line-height: 1.2; text-wrap: balance; }
+.bio p { max-width: 42rem; margin: 0 0 1rem; }
+.bio .lead { font-size: 1.15rem; line-height: 1.55; }
+
+.variety { margin-top: 2rem; background: var(--band-bg); color: var(--band-fg); border-radius: 10px; padding: clamp(1.25rem, 4vw, 2rem); scroll-margin-top: 1rem; }
+.variety .eyebrow { margin: 0 0 0.3rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--band-accent); }
+.variety h2 { margin: 0 0 1.5rem; font-size: clamp(1.5rem, 4vw, 2.1rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.15; }
+.press { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.5rem; }
+.press a { display: flex; flex-direction: column; gap: 0.5rem; height: 100%; padding-top: 0.9rem; border-top: 2px solid var(--band-fg); color: var(--band-fg); text-decoration: none; }
+.press .film { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--band-muted); }
+.press .headline { font-size: 1.1rem; font-weight: 600; line-height: 1.3; text-wrap: balance; }
+.press .go { margin-top: auto; padding-top: 0.25rem; font-size: 0.82rem; font-weight: 500; color: var(--band-accent); }
+.press a:hover .headline { text-decoration: underline; text-underline-offset: 3px; }
+.variety a:focus-visible { outline-color: var(--band-accent); }
+
+section.text { padding-block: 2.5rem 0.5rem; scroll-margin-top: 1rem; }
+section.text h2 { margin: 0 0 0.75rem; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
+section.text p { max-width: 38rem; margin: 0 0 0.9rem; color: var(--fg); }
+.mail { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; }
+.mail-addr { margin: 0; font-size: 1.15rem; font-weight: 500; overflow-wrap: anywhere; }
+.mail-addr.empty { color: var(--muted); font-weight: 400; }
+.copy { font: inherit; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.5rem 0.9rem; background: none; color: var(--fg); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+.copy:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.copy:disabled { color: var(--muted); cursor: not-allowed; }
+footer { padding-top: 2rem; margin-top: 2rem; border-top: 1px solid var(--line); font-size: 0.78rem; color: var(--muted); }
+
+dialog { background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; width: min(92vw, 60rem); max-width: 100%; }
+dialog::backdrop { background: rgba(0, 0, 0, 0.72); }
+.dlg-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+.dlg-head h3 { margin: 0; font-size: 1rem; font-weight: 600; }
+.dlg-close { font: inherit; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.45rem 0.85rem; background: none; color: var(--fg); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+.dlg-close:hover { border-color: var(--accent); color: var(--accent); }
+dialog video { display: block; width: 100%; max-height: 72vh; background: #000; border-radius: 6px; }
+.dlg-empty { margin: 0; padding: 2rem 0; color: var(--muted); text-align: center; }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top">Alex Mandel</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <div class="hero">
+      <p class="kicker">Composer · Songwriter</p>
+      <h1>Music for storytelling.</h1>
+      <p class="sub">Original scores and songs for film, television and animation.</p>
+    </div>
+
+    <div class="work" id="work">
+      <a class="card wide" href="#work" data-key="animation" data-title="Animation">
+        <figure class="shot">
+          <img src="img/brave.jpg" alt="Merida walking toward the standing stones through a misty Highland meadow, from Brave" width="1600" height="900">
+          <span class="chip">pixar.com</span>
+        </figure>
+        <div class="cap">
+          <h2>Animation</h2>
+          <span class="play" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M1 0.5 9.5 5 1 9.5z"/></svg></span>
+          <p>Brave · The Inventor · Super Giant Robot Brothers</p>
+        </div>
+      </a>
+
+      <a class="card" href="#work" data-key="live" data-title="Dramatic Live Action">
+        <figure class="shot">
+          <img src="img/live.jpg" alt="An older man adjusting the tie of a young man in a wheelchair, surrounded by grocery shelves, from a live-action film" width="1100" height="825">
+        </figure>
+        <div class="cap">
+          <h2>Dramatic Live Action</h2>
+          <span class="play" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M1 0.5 9.5 5 1 9.5z"/></svg></span>
+          <p>Paper Bag Plan · East Side Sushi</p>
+        </div>
+      </a>
+
+      <a class="card leo" href="#work" data-key="songs" data-title="Songs for Film">
+        <figure class="shot">
+          <img src="img/leo.jpg" alt="Two characters on a balcony under a full moon, from Léo" width="960" height="825">
+        </figure>
+        <div class="cap">
+          <h2>Songs for Film</h2>
+          <span class="play" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M1 0.5 9.5 5 1 9.5z"/></svg></span>
+          <p>Brave · The Inventor · Paper Bag Plan</p>
+        </div>
+      </a>
+    </div>
+
+    <section class="bio" id="about">
+      <h2>Alex Mandel | Composer &amp; Songwriter</h2>
+      <p class="lead">Alex Mandel is an Annie Award-nominated composer and songwriter whose career bridges music, storytelling, and animation.</p>
+      <p>He wrote two original songs for Pixar's Academy Award-winning <em>Brave</em>, composed the score for Netflix's <em>Super Giant Robot Brothers</em>, directed by Mark Andrews, and created the score and original songs for <em>The Inventor</em>, directed by Oscar-nominated <em>Ratatouille</em> writer Jim Capobianco. His songs for <em>The Inventor</em> were performed by an international cast including Daisy Ridley, Marion Cotillard, Stephen Fry, and Matt Berry.</p>
+      <p>Alongside his composing career, Mandel held management roles across Pixar's production pipeline, from story and development through rendering. At Weta Digital, he co-led the animation department on productions including <em>Avengers: Endgame</em>, <em>Avatar: The Way of Water</em>, and <em>Game of Thrones</em>.</p>
+      <p>His work extends to live performance as musical director for NPR's <em>Snap Judgment LIVE</em> and as a songwriter for <em>Norman Rockwell's America</em>, presented as a staged reading at Tony Award-winning TheatreWorks Silicon Valley.</p>
+      <p>Equally at home with orchestral, electronic, and acoustic music, Mandel combines a musician's versatility with a filmmaker's understanding of story, character, and the collaborative creative process.</p>
+      <p>His work has been featured in Variety, with articles exploring the music of <em>Brave</em>, <em>Super Giant Robot Brothers</em>, and <em>The Inventor</em>.</p>
+    </section>
+
+    <section class="variety" id="variety" aria-labelledby="varietyTitle">
+      <p class="eyebrow">In the press</p>
+      <h2 id="varietyTitle">Featured in Variety</h2>
+      <ul class="press">
+        <li>
+          <a href="https://variety.com/2022/artisans/news/super-giant-robot-brothers-score-music-1235340206/" target="_blank" rel="noopener">
+            <span class="film">Super Giant Robot Brothers · 2022</span>
+            <span class="headline">‘Airwolf,’ ‘Knight Rider’ Inspired ‘Super Giant Robot Brothers’ Music</span>
+            <span class="go">Read on Variety →</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://variety.com/2023/artisans/focus/the-inventor-leonardo-davinci-jim-capobianco-1235635383/" target="_blank" rel="noopener">
+            <span class="film">The Inventor · 2023</span>
+            <span class="headline">‘The Inventor’ Illustrates Leonardo da Vinci’s Final Days</span>
+            <span class="go">Read on Variety →</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="text" id="contact">
+      <h2>Contact</h2>
+      <div class="mail">
+        <p class="mail-addr" id="mailAddr"></p>
+        <button class="copy" id="copyBtn" type="button">Copy address</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 Alex Mandel</footer>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <div class="dlg-head">
+    <h3 id="dlgTitle">Video</h3>
+    <button class="dlg-close" id="dlgClose" type="button">Close</button>
+  </div>
+  <div id="dlgBody"></div>
+</dialog>
+
+<script>
+/* Edit these. For each card, set src to a video file published with the page, or href to a video page on another site (it opens in a new tab). */
+const CONTACT_EMAIL = "alexmandelmusic@gmail.com";
+const VIDEOS = {
+  animation: { src: "", href: "" },
+  live: { src: "", href: "" },
+  songs: { src: "", href: "" }
+};
+
+const $ = (id) => document.getElementById(id);
+const dlg = $("dlg");
+const body = $("dlgBody");
+
+function closeDlg() {
+  const v = body.querySelector("video");
+  if (v) { v.pause(); v.removeAttribute("src"); v.load(); }
+  body.innerHTML = "";
+  if (dlg.open) dlg.close();
+}
+function openDlg(title, src) {
+  $("dlgTitle").textContent = title;
+  body.innerHTML = "";
+  if (src) {
+    const v = document.createElement("video");
+    v.controls = true; v.playsInline = true; v.preload = "metadata"; v.src = src;
+    body.appendChild(v);
+  } else {
+    const p = document.createElement("p");
+    p.className = "dlg-empty";
+    p.textContent = "This video has not been added yet.";
+    body.appendChild(p);
+  }
+  if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+  const v = body.querySelector("video");
+  if (v) v.play().catch(() => {});
+}
+
+document.querySelectorAll(".card").forEach((a) => {
+  const cfg = VIDEOS[a.dataset.key] || {};
+  if (!cfg.src && cfg.href) {
+    a.href = cfg.href; a.target = "_blank"; a.rel = "noopener";
+    return;
+  }
+  a.addEventListener("click", (e) => {
+    e.preventDefault();
+    openDlg(a.dataset.title, cfg.src || "");
+  });
+});
+$("dlgClose").addEventListener("click", closeDlg);
+dlg.addEventListener("click", (e) => { if (e.target === dlg) closeDlg(); });
+dlg.addEventListener("close", () => {
+  const v = body.querySelector("video");
+  if (v) v.pause();
+});
+
+const addr = $("mailAddr");
+if (CONTACT_EMAIL) { addr.textContent = CONTACT_EMAIL; }
+else { addr.textContent = "Email address to be added"; addr.classList.add("empty"); $("copyBtn").disabled = true; }
+$("copyBtn").addEventListener("click", async () => {
+  const btn = $("copyBtn");
+  try {
+    await navigator.clipboard.writeText(CONTACT_EMAIL);
+    btn.textContent = "Copied";
+  } catch (e) {
+    const r = document.createRange(); r.selectNodeContents(addr);
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    btn.textContent = "Press copy now";
+  }
+  setTimeout(() => { btn.textContent = "Copy address"; }, 2000);
+});
+</script>
+</body>
+</html>
