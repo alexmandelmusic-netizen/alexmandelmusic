@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Alex Mandel Composer</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<script>
+/* Send visitors on the plain http:// address of the live domain to https://. Runs only on alexmandelmusic.com and www, so previews and local files are unaffected. */
+(function () {
+  var h = location.hostname;
+  if (location.protocol === "http:" && (h === "alexmandelmusic.com" || h === "www.alexmandelmusic.com")) {
+    location.replace("https://" + location.host + location.pathname + location.search + location.hash);
+  }
+})();
+</script>
 <meta name="description" content="Alex Mandel, composer and songwriter for film, television and animation.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
 <style>
@@ -140,7 +149,6 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.72); }
 .dlg-close { font: inherit; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.45rem 0.85rem; background: none; color: var(--fg); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
 .dlg-close:hover { border-color: var(--accent); color: var(--accent); }
 dialog video { display: block; width: 100%; max-height: 72vh; background: #000; border-radius: 6px; }
-.dialog-stream { width: 100%; aspect-ratio: 16 / 9; border: 0; display: block; background: #000; border-radius: 6px; }
 .dlg-empty { margin: 0; padding: 2rem 0; color: var(--muted); text-align: center; }
 </style>
 
@@ -251,15 +259,14 @@ dialog video { display: block; width: 100%; max-height: 72vh; background: #000; 
 </dialog>
 
 <script>
-/* Cloudflare Stream iframe URLs. Each card corresponds to the numbered video below.
-   Animation = am_video1.mp4; Dramatic Live Action = am_video2.mp4;
-   Songs for Film = am_video3.mp4.
-   All three Cloudflare Stream videos are configured. */
+/* The three video files sit in the same folder as this page.
+   Animation = am_video1.mp4, Dramatic Live Action = am_video2.mp4, Songs for Film = am_video3.mp4.
+   To link a card to a video hosted elsewhere instead, leave src empty and set href (it opens in a new tab). */
 const CONTACT_EMAIL = "alexmandelmusic@gmail.com";
 const VIDEOS = {
-  animation: { cloudflare: "https://customer-9sqsapusuvcx3i1z.cloudflarestream.com/466593f489f69b96f03c883ef6c84b46/iframe" },
-  live: { cloudflare: "https://customer-9sqsapusuvcx3i1z.cloudflarestream.com/7384038c4325d5fb00aa5caa8d7d2ae8/iframe" },
-  songs: { cloudflare: "https://customer-9sqsapusuvcx3i1z.cloudflarestream.com/9ffe46d8ed891bd41cbf05b77147980d/iframe" }
+  animation: { src: "am_video1.mp4", href: "" },
+  live: { src: "am_video2.mp4", href: "" },
+  songs: { src: "am_video3.mp4", href: "" }
 };
 
 const $ = (id) => document.getElementById(id);
@@ -269,22 +276,23 @@ const body = $("dlgBody");
 function closeDlg() {
   const v = body.querySelector("video");
   if (v) { v.pause(); v.removeAttribute("src"); v.load(); }
-  // Removing the Cloudflare iframe also stops its playback.
-  body.replaceChildren();
+  body.innerHTML = "";
   if (dlg.open) dlg.close();
 }
-function openDlg(title, cfg) {
+function openDlg(title, src) {
   $("dlgTitle").textContent = title;
-  body.replaceChildren();
-  if (cfg.cloudflare) {
-    const iframe = document.createElement("iframe");
-    iframe.className = "dialog-stream";
-    iframe.src = cfg.cloudflare;
-    iframe.title = title + " video";
-    iframe.loading = "eager";
-    iframe.allow = "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen";
-    iframe.allowFullscreen = true;
-    body.appendChild(iframe);
+  body.innerHTML = "";
+  if (src) {
+    const v = document.createElement("video");
+    v.controls = true; v.playsInline = true; v.preload = "metadata"; v.src = src;
+    v.addEventListener("error", () => {
+      body.innerHTML = "";
+      const p = document.createElement("p");
+      p.className = "dlg-empty";
+      p.textContent = "This video could not be loaded.";
+      body.appendChild(p);
+    });
+    body.appendChild(v);
   } else {
     const p = document.createElement("p");
     p.className = "dlg-empty";
@@ -292,21 +300,26 @@ function openDlg(title, cfg) {
     body.appendChild(p);
   }
   if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
+  const v = body.querySelector("video");
+  if (v) v.play().catch(() => {});
 }
+
 document.querySelectorAll(".card").forEach((a) => {
   const cfg = VIDEOS[a.dataset.key] || {};
+  if (!cfg.src && cfg.href) {
+    a.href = cfg.href; a.target = "_blank"; a.rel = "noopener";
+    return;
+  }
   a.addEventListener("click", (e) => {
     e.preventDefault();
-    openDlg(a.dataset.title, cfg);
+    openDlg(a.dataset.title, cfg.src || "");
   });
 });
-
 $("dlgClose").addEventListener("click", closeDlg);
 dlg.addEventListener("click", (e) => { if (e.target === dlg) closeDlg(); });
 dlg.addEventListener("close", () => {
   const v = body.querySelector("video");
   if (v) v.pause();
-  body.replaceChildren();
 });
 
 const addr = $("mailAddr");
