@@ -149,6 +149,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.72); }
 .dlg-close { font: inherit; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.45rem 0.85rem; background: none; color: var(--fg); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
 .dlg-close:hover { border-color: var(--accent); color: var(--accent); }
 dialog video { display: block; width: 100%; max-height: 72vh; background: #000; border-radius: 6px; }
+.video-frame { width: 100%; aspect-ratio: 16 / 9; border: 0; display: block; border-radius: 6px; background: #000; }
 .dlg-empty { margin: 0; padding: 2rem 0; color: var(--muted); text-align: center; }
 </style>
 
@@ -259,14 +260,12 @@ dialog video { display: block; width: 100%; max-height: 72vh; background: #000; 
 </dialog>
 
 <script>
-/* The three video files sit in the same folder as this page.
-   Animation = am_video1.mp4, Dramatic Live Action = am_video2.mp4, Songs for Film = am_video3.mp4.
-   To link a card to a video hosted elsewhere instead, leave src empty and set href (it opens in a new tab). */
+/* Cloudflare Stream video player URLs, one for each existing card. */
 const CONTACT_EMAIL = "alexmandelmusic@gmail.com";
 const VIDEOS = {
-  animation: { src: "am_video1.mp4", href: "" },
-  live: { src: "am_video2.mp4", href: "" },
-  songs: { src: "am_video3.mp4", href: "" }
+  animation: "https://customer-9sqsapusuvcx3i1z.cloudflarestream.com/466593f489f69b96f03c883ef6c84b46/iframe",
+  live: "https://customer-9sqsapusuvcx3i1z.cloudflarestream.com/7384038c4325d5fb00aa5caa8d7d2ae8/iframe",
+  songs: "https://customer-9sqsapusuvcx3i1z.cloudflarestream.com/9ffe46d8ed891bd41cbf05b77147980d/iframe"
 };
 
 const $ = (id) => document.getElementById(id);
@@ -274,25 +273,21 @@ const dlg = $("dlg");
 const body = $("dlgBody");
 
 function closeDlg() {
-  const v = body.querySelector("video");
-  if (v) { v.pause(); v.removeAttribute("src"); v.load(); }
-  body.innerHTML = "";
+  // Removing the iframe stops Cloudflare playback immediately.
+  body.replaceChildren();
   if (dlg.open) dlg.close();
 }
-function openDlg(title, src) {
+function openDlg(title, iframeUrl) {
   $("dlgTitle").textContent = title;
-  body.innerHTML = "";
-  if (src) {
-    const v = document.createElement("video");
-    v.controls = true; v.playsInline = true; v.preload = "metadata"; v.src = src;
-    v.addEventListener("error", () => {
-      body.innerHTML = "";
-      const p = document.createElement("p");
-      p.className = "dlg-empty";
-      p.textContent = "This video could not be loaded.";
-      body.appendChild(p);
-    });
-    body.appendChild(v);
+  body.replaceChildren();
+  if (iframeUrl) {
+    const frame = document.createElement("iframe");
+    frame.className = "video-frame";
+    frame.title = title + " video";
+    frame.src = iframeUrl;
+    frame.setAttribute("allow", "accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen");
+    frame.setAttribute("allowfullscreen", "");
+    body.appendChild(frame);
   } else {
     const p = document.createElement("p");
     p.className = "dlg-empty";
@@ -300,27 +295,16 @@ function openDlg(title, src) {
     body.appendChild(p);
   }
   if (typeof dlg.showModal === "function") dlg.showModal(); else dlg.setAttribute("open", "");
-  const v = body.querySelector("video");
-  if (v) v.play().catch(() => {});
 }
-
 document.querySelectorAll(".card").forEach((a) => {
-  const cfg = VIDEOS[a.dataset.key] || {};
-  if (!cfg.src && cfg.href) {
-    a.href = cfg.href; a.target = "_blank"; a.rel = "noopener";
-    return;
-  }
   a.addEventListener("click", (e) => {
     e.preventDefault();
-    openDlg(a.dataset.title, cfg.src || "");
+    openDlg(a.dataset.title, VIDEOS[a.dataset.key] || "");
   });
 });
 $("dlgClose").addEventListener("click", closeDlg);
 dlg.addEventListener("click", (e) => { if (e.target === dlg) closeDlg(); });
-dlg.addEventListener("close", () => {
-  const v = body.querySelector("video");
-  if (v) v.pause();
-});
+dlg.addEventListener("close", () => body.replaceChildren());
 
 const addr = $("mailAddr");
 if (CONTACT_EMAIL) { addr.textContent = CONTACT_EMAIL; }
